@@ -7,6 +7,10 @@ import json
 import uuid
 from sqids import Sqids
 import random
+import requests as req
+
+r = req.get("http://checkip.amazonaws.com")
+ip = r.text
 
 
 sqids = Sqids(alphabet="1234567890", min_length=4)
@@ -116,5 +120,5 @@ async def main():
 
 
 if __name__ == "__main__":
-    print("⁘ STARTING SERVER")
+    print("⁘ STARTING SERVER ON " + ip)
     asyncio.run(main())
