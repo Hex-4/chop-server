@@ -80,6 +80,25 @@ async def echo(websocket):
                 }
                 print("SENDING:\n" + str(r))
                 broadcast(room["sockets"], json.dumps(r))
+            case "ATK":
+                room = next((room for room in rooms if room["code"] == m["code"]), False) # Search for rooms
+                print("◈ ATTACK. CONTENT:\n" + str(m))
+                r = {
+                    "t": "ATKX",
+                    "card": m["card"],
+                    "id": m["id"]
+                }
+                print("SENDING:\n" + str(r))
+                broadcast(room["sockets"], json.dumps(r))
+            case "COMBO":
+                room = next((room for room in rooms if room["code"] == m["code"]), False) # Search for rooms
+                print("◈ COMBO TRIGGERED. CONTENT:\n" + str(m))
+                r = {
+                    "t": "COMBOX",
+                    "id": m["id"]
+                }
+                print("SENDING:\n" + str(r))
+                broadcast(room["sockets"], json.dumps(r))
             case _:
                 print("◈ UNKNOWN TYPE. CONTENT:\n" + str(m))
             
