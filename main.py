@@ -8,6 +8,7 @@ import uuid
 from sqids import Sqids
 import random
 import requests as req
+import emoji_generator.random_emoji as emojigen
 
 r = req.get("http://checkip.amazonaws.com")
 ip = r.text
@@ -21,12 +22,13 @@ sockets = set()
 
 async def echo(websocket):
     async for message in websocket:
-        print("Got Something!" + message)
         m = json.loads(message)
+        print(active_room_codes)
         match m["t"]:
             case "NEWROOM":
                 code = generate_room_code()
                 pid = str(uuid.uuid4())
+                print(pid)
                 rooms.append({
                     "code": code,
                     "sockets": {websocket},
@@ -103,14 +105,22 @@ async def echo(websocket):
                 }
                 print("SENDING:\n" + str(r))
                 broadcast(room["sockets"], json.dumps(r))
+            case "END":
+                if m["code"] in active_room_codes:
+                    print(str(m["code"]))
+                    print(active_room_codes)
+                    active_room_codes.remove(str(m["code"]))
+                    print("◈ CLOSING ROOM: " + str(m["code"]))
             case _:
                 print("◈ UNKNOWN TYPE. CONTENT:\n" + str(m))
             
 def generate_room_code():
+    
     c = sqids.encode([random.randint(0,100)])
     while c in active_room_codes:
         c = sqids.encode([random.randint(0,100)])
     active_room_codes.append(c)
+    print(active_room_codes)
     return c
     
 
