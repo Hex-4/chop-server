@@ -105,6 +105,15 @@ async def echo(websocket):
                 }
                 print("SENDING:\n" + str(r))
                 broadcast(room["sockets"], json.dumps(r))
+            case "USE":
+                room = next((room for room in rooms if room["code"] == m["code"]), False) # Search for rooms
+                print("◈ USE TRIGGERED. CONTENT:\n" + str(m))
+                r = {
+                    "t": "USEX",
+                    "id": m["id"]
+                }
+                print("SENDING:\n" + str(r))
+                broadcast(room["sockets"], json.dumps(r))
             case "END":
                 if m["code"] in active_room_codes:
                     print(str(m["code"]))
